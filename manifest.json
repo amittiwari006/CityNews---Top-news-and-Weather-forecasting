@@ -1,0 +1,16 @@
+{
+  "name": "SkyPulse | Weather & Local News",
+  "short_name": "SkyPulse",
+  "description": "Offline Weather Forecast and Local News Dashboard",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1e293b",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><path d='M80.6 41.8C77.8 27.5 65.2 16.7 50 16.7c-12 0-22.5 6.8-27.7 16.8C9.7 34.8 0 45.5 0 58.3c0 13.8 11.2 25 25 25h54.2c11.5 0 20.8-9.3 20.8-20.8 0-11-8.5-19.9-19.4-20.7z' fill='%2338bdf8'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

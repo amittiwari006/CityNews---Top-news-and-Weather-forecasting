@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Offline Weather Forecast and Local News Dashboard">
+  <meta name="theme-color" content="#1e293b">
+  <title>CityNews | Weather & Local News</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Offline Status Bar -->
+  <aside id="network-banner" class="network-banner online" role="status" aria-live="polite">
+    <div class="banner-content">
+      <span class="status-dot"></span>
+      <span id="network-text">Connected to internet</span>
+      <span id="cache-info" class="cache-info"></span>
+    </div>
+    <button id="sync-btn" class="btn-ghost-sm" title="Refresh data">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+      Refresh
+    </button>
+  </aside>
+
+  <!-- Main Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 24 24">
+          <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+        </svg>
+        <div>
+          <h1>CityNews</h1>
+          <p class="tagline">Weather & Local News Hub</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Temperature Unit Toggle -->
+        <div class="unit-toggle" role="group" aria-label="Temperature unit selection">
+          <button id="unit-c" class="active" title="Celsius">°C</button>
+          <button id="unit-f" title="Fahrenheit">°F</button>
+        </div>
+
+        <!-- Saved Articles Toggle Button -->
+        <button id="saved-modal-btn" class="icon-btn" title="View Offline Saved Articles">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15-5-2.18L7 18V5h10v13z"/></svg>
+          <span id="saved-count" class="badge">0</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="icon-btn" title="Toggle Dark/Light Mode">
+          <svg id="theme-icon" class="icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search & Filter Controls -->
+  <section class="search-section">
+    <div class="search-container">
+      <form id="search-form" class="search-bar" role="search">
+        <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input 
+          type="text" 
+          id="location-input" 
+          placeholder="Search any city or place (e.g. London, Tokyo, New York)..." 
+          autocomplete="off"
+          required
+        >
+        <button type="submit" class="btn-primary">Search</button>
+        <button type="button" id="geo-btn" class="btn-secondary" title="Use current GPS location">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+          <span class="geo-label">Locate</span>
+        </button>
+      </form>
+
+      <!-- History & Quick Chips -->
+      <div class="recent-chips-wrapper">
+        <span class="chip-label">Quick Places:</span>
+        <div id="recent-chips" class="recent-chips">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="main-layout">
+    <!-- Weather Column -->
+    <section class="weather-column" aria-label="Weather forecast">
+      <div class="section-title-row">
+        <h2>Weather Forecast</h2>
+        <span id="weather-updated-time" class="timestamp-tag"></span>
+      </div>
+
+      <!-- Current Weather Card -->
+      <div id="current-weather-card" class="card current-weather-card loading-skeleton">
+        <div class="weather-header">
+          <div>
+            <h3 id="location-name">Loading location...</h3>
+            <p id="location-meta">Please search a city</p>
+          </div>
+          <div class="weather-badge" id="condition-badge">--</div>
+        </div>
+
+        <div class="weather-main">
+          <div class="temp-display">
+            <span id="current-temp" class="temp-value">--</span>
+            <span class="temp-unit">°C</span>
+          </div>
+          <div class="condition-display">
+            <div id="weather-icon-container" class="weather-svg-container"></div>
+            <img id="weather-icon" src="" alt="Weather condition" class="weather-icon hidden">
+            <p id="condition-text">Fetching weather...</p>
+            <p class="feels-like">Feels like <span id="feels-like-temp">--</span></p>
+          </div>
+        </div>
+
+        <!-- Detail Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <span class="metric-label">Humidity</span>
+            <span id="metric-humidity" class="metric-val">--%</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Wind</span>
+            <span id="metric-wind" class="metric-val">-- km/h</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">UV Index</span>
+            <span id="metric-uv" class="metric-val">--</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Rain Chance</span>
+            <span id="metric-rain-chance" class="metric-val">--%</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Air Pressure</span>
+            <span id="metric-pressure" class="metric-val">-- mb</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Visibility</span>
+            <span id="metric-visibility" class="metric-val">-- km</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hourly Forecast -->
+      <div class="card hourly-forecast-card">
+        <h3>Hourly Forecast (Today)</h3>
+        <div id="hourly-track" class="hourly-track">
+          <!-- Dynamically populated hourly slots -->
+        </div>
+      </div>
+
+      <!-- 3-Day Forecast -->
+      <div class="card forecast-card">
+        <h3>Upcoming 3-Day Forecast</h3>
+        <div id="forecast-list" class="forecast-list">
+          <!-- Dynamically populated forecast rows -->
+        </div>
+      </div>
+    </section>
+
+    <!-- News Column -->
+    <section class="news-column" aria-label="Local news">
+      <div class="section-title-row">
+        <div>
+          <h2>Important News & Headlines</h2>
+          <p id="news-subtitle" class="news-sub">Top stories around this area</p>
+        </div>
+        <span id="news-updated-time" class="timestamp-tag"></span>
+      </div>
+
+      <!-- News Category Filter -->
+      <div class="news-categories" id="news-categories">
+        <button class="cat-pill active" data-category="all">All</button>
+        <button class="cat-pill" data-category="top">Top</button>
+        <button class="cat-pill" data-category="business">Business</button>
+        <button class="cat-pill" data-category="technology">Tech</button>
+        <button class="cat-pill" data-category="sports">Sports</button>
+      </div>
+
+      <!-- News Feed Container -->
+      <div id="news-feed" class="news-feed">
+        <!-- Dynamically populated news cards -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Saved Articles Modal -->
+  <div id="saved-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="saved-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="saved-modal-title">Saved Offline Articles</h3>
+        <button id="close-saved-modal" class="icon-btn" aria-label="Close modal">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">These articles are stored on your device and can be read completely offline anytime.</p>
+        <div id="saved-articles-list" class="saved-articles-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="assertive"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>SkyPulse Dashboard • Full Offline PWA Support • Data powered by WeatherAPI & NewsData</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
